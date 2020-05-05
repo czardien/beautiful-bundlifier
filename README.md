@@ -2,6 +2,12 @@
 
 This repository hosts codebase and instrumentation for an application to push notifications given an event stream.
 
+## How this is contrived
+
+The most obviously contrived thing about this exercise is that we're essentially asked to make informed decisions based on future data. E.g. send a notification at 10am to a given user on a given day given the total number of notifications that day.
+
+If not we're essentially asked to mock a producer / consumer of messages. We're also in charge of virtualising time as the data spans 3 months worth of data; this
+
 ## I am confused about this product
 
 Any time I am thinking of this product as a service sitting in a backend I am invariably finding it to be either a long lived deploy that either exposes and HTTP API and is being posted events or polls a message queue; or a short term job that processes every minute for example a batch of data.
