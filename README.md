@@ -1,6 +1,6 @@
 # beautiful-notifications-bundler
 
-This repository hosts codebase and instrumentation for an application to push notifications given an event stream.
+This repository hosts codebase and instrumentation for an application to push bundles given a notification stream.
 
 ## Features
 
@@ -42,6 +42,8 @@ Given a pending bundle the ranker returns a readiness score between 0 and 1 give
 * Current number of tours in the bundle,
 * Current number of notifications received by the user on the current day,
 
+###### TODO: expand on the ranker
+
 ## Illustrated flow
 
 Below is an illustrated flow of our main `bundler.py` entrypoint.
@@ -58,6 +60,31 @@ Below is an illustrated flow of our main `bundler.py` entrypoint.
 * All pending bundles with a readiness score higher than a hyper parameter threshold will be moved into a ready state and further be sent
 
 ## Usage
+
+### python
+
+Binaries for `python3` are needed. To use follow below steps:
+* Git clone this repo anywhere; `cd <cloned>`
+* This project doesn't use dependencies so you're good to go without a virtual environment,
+* To get all bundles on standard output run, with optional redirection:
+
+```
+python src/bundler.py <path-to-notifications-csv> [ > <path-to-bundles.csv> ]
+```
+
+* To get all users on standard output run, with optional redirection:
+
+```
+python src/users.py <path-to-notifications-csv> [ > <path-to-users-csv> ]
+```
+
+* To get performance stats on bundles run, with optional redirection:
+
+```
+python src/stats.py <path-to-bundles-csv> [ > <path-to-stats-csv> ]
+```
+
+### docker-compose
 
 Binaries for `git`, `docker` and `docker-compose` are needed. To use follow the below steps:
 
