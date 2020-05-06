@@ -93,6 +93,7 @@ Binaries for `git`, `docker` and `docker-compose` are needed. To use follow the 
 	* This will generate bundles and stats from notifications by running the command:
 
 ```
+python src/users.py data/notifications.csv > data/users.csv && \
 python src/bundler.py data/notifications.csv > data/bundles.csv && \
 python src/stats.py data/bundles.csv > data/stats.csv
 ```
