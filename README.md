@@ -57,6 +57,19 @@ Below is an illustrated flow of our main `bundler.py` entrypoint.
 * Variables are fed into a ranker and a readiness score will be returned,
 * All pending bundles with a readiness score higher than a hyper parameter threshold will be moved into a ready state and further be sent
 
+## Usage
+
+Binaries for `git`, `docker` and `docker-compose` are needed. To use follow the below steps:
+
+* Git clone this repository anywhere; then `cd <cloned_repo>`
+* Run: `docker-compose up`,
+	* This will generate bundles and stats from notifications by running the command:
+
+```
+python src/bundler.py data/notifications.csv > data/bundles.csv && \
+python src/stats.py data/bundles.csv > data/stats.csv
+```
+
 ## Limitations
 
 The main limitation we find about this challenge is that we're essentially asked to make informed decisions based on future data. e.g. send a notification at 10am to a given user on a given day given the total number of notifications that day.
