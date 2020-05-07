@@ -28,6 +28,7 @@ Below is an overview of the codebase:
 
 * `/doc` contains all docs, currently [ADRs](https://github.com/npryce/adr-tools)
 
+* `Makefile` defines targets to ease with development along with utils targets,
 * `Dockerfile` defines our application docker image, based on `python:3.8-alpine` image; currently set with `CMD` to `python src/bundlifier.py data/notifications.csv > data/bundles.csv`
 * `docker-compose.yml` provides a convenient entrypoint to our application based on our Dockerfile.
 
