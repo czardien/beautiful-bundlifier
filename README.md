@@ -19,8 +19,10 @@ Below is an overview of the codebase:
 
 * `/lib` contains all additional codebase, including:
 	* `/lib/models/` which contains class models for our domain (e.g. notification, bundle, user, managers)
-	* `/lib/config.py` which contains configuration for our entrypoints.
-	* `/lib/utils.py` which contains utils method e.g. argument parser.
+	* `/lib/config.py` which contains configuration for our entrypoints,
+	* `/lib/utils.py` which contains utils method e.g. argument parser,
+	* `/lib/errors.py` which contains bundlify specific errors,
+	* `/lib/hypervisor.py` which contains the bulk of the logic for coming with bundles from notifications defined as an abstract class with different implementations
 
 * `/tests` contains all unit tests written in pytest
 
