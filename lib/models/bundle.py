@@ -1,4 +1,3 @@
-from typing import List
 from datetime import datetime
 
 from lib.models.notification import Notification
@@ -21,23 +20,6 @@ class Bundle:
         """The friend name who completed the first tour of the present bundle"""
         self.timestamp_last_tour = timestamp_last_tour
 
-    @staticmethod
-    def _split_line(line: str, csv_delimiter: str):
-        return [element.strip().replace("\n", "") for element in line.split(csv_delimiter)]
-
-    @classmethod
-    def from_line(cls, line: str, csv_headers: List[str], csv_delimiter: str):
-        csv_line = cls._split_line(line, csv_delimiter)
-        args = {
-            "timestamp_first_tour": datetime.strptime(csv_line[0], cls._TIMESTAMP_FORMAT),
-            "timestamp_last_tour": datetime.strptime(csv_line[1], cls._TIMESTAMP_FORMAT),
-            "tours": int(csv_line[2]),
-            "receiver_id": csv_line[3],
-            "first_friend_id": "UNKNOWN",
-            "first_friend_name": csv_line[4].split(" ")[0],
-        }
-        return Bundle(**args)
-
     @property
     def message(self):
         if len(self.friend_ids) > 1:
@@ -45,10 +27,6 @@ class Bundle:
 
         else:
             return f"{self.first_friend_name} went on a tour"
-
-    @property
-    def delay(self):
-        return self.timestamp_last_tour - self.timestamp_first_tour
 
     @classmethod
     def from_notification(cls, notification: Notification):

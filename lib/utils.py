@@ -14,3 +14,7 @@ def is_a_new_day(cur: datetime, pre: Union[datetime, None]) -> bool:
         return False
 
     return cur.day != pre.day or cur.month != pre.month or cur.year != pre.year
+
+
+def split_csv_line(line: str, csv_delimiter: str):
+    return [element.strip().replace("\n", "") for element in line.split(csv_delimiter)]
