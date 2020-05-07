@@ -1,4 +1,4 @@
-# beautiful-notifications-bundler
+# beautiful-bundlifier
 
 This repository hosts codebase and instrumentation for an application to push bundles given a notification stream.
 
@@ -19,8 +19,8 @@ Below is an overview of the codebase:
 	* `stats.csv` an additional file containing statistics and metrics about the ranker performance.
 
 * `/src` contains all entrypoints, including:
-	* `bundler.py` the main entrypoint which outputs bundles to stdout given a filepath to notifications,
-	* `read-users.py` a secondary entrypoint which outputs user ids given a filepath to notifications.
+	* `get_bundles.py` the main entrypoint which outputs bundles to stdout given a filepath to notifications,
+	* `get_users.py` a secondary entrypoint which outputs user ids given a filepath to notifications.
 
 * `/lib` contains all additional codebase, including:
 	* `/lib/models/` which contains class models for our domain (e.g. notification, bundle, user, managers)
@@ -30,7 +30,7 @@ Below is an overview of the codebase:
 
 * `/doc` contains all docs, currently [ADRs](https://github.com/npryce/adr-tools)
 
-* `Dockerfile` defines our application docker image, based on `python:3.8-alpine` image; currently set with `CMD` to `python src/bundler.py data/notifications.csv > data/bundles.csv`
+* `Dockerfile` defines our application docker image, based on `python:3.8-alpine` image; currently set with `CMD` to `python src/get_bundles.py data/notifications.csv > data/bundles.csv`
 * `docker-compose.yml` provides a convenient entrypoint to our application based on our Dockerfile.
 
 ### Ranker
@@ -46,7 +46,7 @@ Given a pending bundle the ranker returns a readiness score between 0 and 1 give
 
 ## Illustrated flow
 
-Below is an illustrated flow of our main `bundler.py` entrypoint.
+Below is an illustrated flow of our main `get_bundles.py` entrypoint.
 
 * The bundle manager is holding an internal state of all pending bundles,
 * A notification is seen by the bundle manager,
@@ -69,19 +69,19 @@ Binaries for `python3` are needed. To use follow below steps:
 * To get all bundles on standard output run, with optional redirection:
 
 ```
-python src/bundler.py <path-to-notifications-csv> [ > <path-to-bundles.csv> ]
+python src/get_bundles.py <path-to-notifications-csv> [ > <path-to-bundles.csv> ]
 ```
 
 * To get all users on standard output run, with optional redirection:
 
 ```
-python src/users.py <path-to-notifications-csv> [ > <path-to-users-csv> ]
+python src/get_users.py.py <path-to-notifications-csv> [ > <path-to-users-csv> ]
 ```
 
 * To get performance stats on bundles run, with optional redirection:
 
 ```
-python src/stats.py <path-to-bundles-csv> [ > <path-to-stats-csv> ]
+python src/get_stats.py <path-to-bundles-csv> [ > <path-to-stats-csv> ]
 ```
 
 ### docker-compose
@@ -93,9 +93,9 @@ Binaries for `git`, `docker` and `docker-compose` are needed. To use follow the 
 	* This will generate bundles and stats from notifications by running the command:
 
 ```
-python src/users.py data/notifications.csv > data/users.csv && \
-python src/bundler.py data/notifications.csv > data/bundles.csv && \
-python src/stats.py data/bundles.csv > data/stats.csv
+python src/get_users.py.py data/notifications.csv > data/users.csv && \
+python src/get_bundles.py data/notifications.csv > data/bundles.csv && \
+python src/get_stats.py data/bundles.csv > data/stats.csv
 ```
 
 ## Limitations

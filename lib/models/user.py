@@ -22,6 +22,10 @@ class UserManager:
                 cls._ALL_USERS[uid] = User(uid, 0)
 
     @classmethod
-    def reset_all_notifications_count(cls):
+    def reset_all_bundles_count(cls):
         for user in cls._ALL_USERS.values():
-            user.notifications_count = 0
+            user.bundles_count = 0
+
+    @classmethod
+    def get(cls, uid: str):
+        return cls._ALL_USERS[uid]
