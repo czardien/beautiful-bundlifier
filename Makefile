@@ -9,6 +9,9 @@ check-tests:
 	pytest --cov
 
 # utils target
+jupyter:
+	PYTHONPATH=$(shell pwd) jupyter-notebook
+
 clean:
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
