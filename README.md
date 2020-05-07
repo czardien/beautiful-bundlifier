@@ -18,7 +18,7 @@ Below is an overview of the codebase:
 	* `bundlify.py` the main entrypoint which outputs bundles to stdout given a filepath to notifications,
 
 * `/lib` contains all additional codebase, including:
-	* `/lib/models/` which contains class models for our domain (e.g. notification, bundle, user, managers)
+	* `/lib/models/` which contains class models for our domain (e.g. notification, bundle)
 	* `/lib/config.py` which contains configuration for our entrypoints,
 	* `/lib/utils.py` which contains utils method e.g. argument parser,
 	* `/lib/errors.py` which contains bundlify specific errors,
