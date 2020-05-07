@@ -1,0 +1,2 @@
+class BundlifyError(Exception):
+    pass

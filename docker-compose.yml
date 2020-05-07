@@ -5,5 +5,3 @@ services:
     build: .
     volumes:
       - ./:/bundlifier
-    command: 'sh -c "chmod +x docker-compose-entrypoint.sh && ./docker-compose-entrypoint.sh"'
-    #command: 'ls -la'

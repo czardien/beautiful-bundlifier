@@ -8,4 +8,4 @@ ENV PYTHONPATH=/bundlifier
 
 USER bundlifier
 WORKDIR /bundlifier
-CMD ["python", "src/bundlifier.py", "data/notifications.csv"]
+CMD ["python", "src/bundlify.py", "data/notifications.csv", ">", "data/bundles.csv"]
