@@ -39,3 +39,14 @@ class HypervisorNaive(Hypervisor):
                 bundles.append(Bundle.from_notification(notification))
 
         return bundles
+
+
+class HypervisorV1(Hypervisor):
+
+    def _compute_bundles_from_notifications(self) -> List[Bundle]:
+        bundles = list()
+        for user_id, notifications in self.user_notifications.items():
+            for notification in notifications:
+                bundles.append(Bundle.from_notification(notification))
+
+        return bundles
