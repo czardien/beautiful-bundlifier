@@ -2,10 +2,14 @@ import argparse
 from typing import Union
 from datetime import datetime
 
+from lib.hypervisor import HypervisorFactory
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Generates bundles from a timestamped notifications stream')
     parser.add_argument('notifications_filepath', type=str, help='Absolute path for the event stream to process.')
+    parser.add_argument('--hypervisor', dest="hypervisor", type=str, default="v1",
+            choices=list(HypervisorFactory._ENABLED.keys()), help='Hypervisor name to use')
     return parser.parse_args()
 
 

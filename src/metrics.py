@@ -1,76 +1,58 @@
-import sys
-import argparse
-from datetime import datetime
+import statistics as stats
 
 from lib import utils
 from lib.models.bundle import Bundle
 
 
-def metrics(bundles_filepath: str, headers: bool = False):
+def metrics(bundles_filepath: str):
     """
     Get all bundles and users with number of bundles sent per user; based on notebooks/bundles.ipynb measures.
     """
-    users = dict()
     bundles = list()
 
-    with open(bundles_filepath, "r") as fp:
-        for line in fp.readlines():
-            split = utils.split_csv_line(line, ',')
+    daily_avgs = list()
+    daily_loads = dict()
+    daily_delays = list()
 
-            bundle = Bundle(split[2], datetime.strptime(split[0], Bundle._TIMESTAMP_FORMAT),
-                            datetime.strptime(split[1], Bundle._TIMESTAMP_FORMAT), split[3], "UNKNOWN", "UNKOWN")
+    with open(bundles_filepath, "r") as fp:
+        previous_ts = None
+        for line in fp.readlines():
+            bundle = Bundle.from_line(line)
             bundles.append(bundle)
 
-            if bundle.receiver_id not in users:
-                users[bundle.receiver_id] = 1
+            current_ts = bundle.timestamp_last_tour
+
+            if utils.is_a_new_day(current_ts, previous_ts):
+                daily_avgs.append({
+                    "load": stats.mean(list(daily_loads.values())),
+                    "delay": stats.mean(daily_delays)
+                })
+
+                daily_loads = dict()
+                daily_delays = list()
+
+            if bundle.receiver_id in daily_loads:
+                daily_loads[bundle.receiver_id] += 1
+
             else:
-                users[bundle.receiver_id] += 1
+                daily_loads[bundle.receiver_id] = 1
 
-    span_bundles = bundles[-1].timestamp_last_tour - bundles[0].timestamp_last_tour
-    span_bundles_seconds = span_bundles.total_seconds()
+            daily_delays.append((bundle.timestamp_last_tour - bundle.timestamp_first_tour).total_seconds())
 
-    # converting values for users to daily averages
-    for uid, val in users.items():
-        users[uid] = val / (span_bundles_seconds / 3600 / 24)
+            previous_ts = current_ts
 
-    # separating users on load acceptable threshold
-    top_users_daily = {uid: val for uid, val in users.items() if val > 4}
-    rest_users_daily = {uid: val for uid, val in users.items() if val <= 4}
+    avg_load = stats.mean([daily_avg["load"] for daily_avg in daily_avgs])
+    std_load = stats.stdev([daily_avg["load"] for daily_avg in daily_avgs])
 
-    # measuring average load and delay on two sets
-    avg_load_rest = sum(rest_users_daily.values()) / len(rest_users_daily)
-    avg_load_top = sum(top_users_daily.values()) / len(top_users_daily)
+    avg_delay = stats.mean([daily_avg["delay"] for daily_avg in daily_avgs])
+    std_delay = stats.stdev([daily_avg["delay"] for daily_avg in daily_avgs])
 
-    rest_bundles = [b for b in bundles if b.receiver_id in rest_users_daily]
-    top_bundles = [b for b in bundles if b.receiver_id in top_users_daily]
+    print(f"Average daily load per user: {avg_load:.2f} bundle/user/day")
+    print(f"Std dev daily load per user: {std_load:.2f} bundle/user/day")
 
-    avg_delay_rest = sum(
-        [
-            (b.timestamp_last_tour - b.timestamp_first_tour).total_seconds()
-            for b in rest_bundles
-        ]) / len(rest_bundles)
-
-    avg_delay_top = sum(
-        [
-            (b.timestamp_last_tour - b.timestamp_first_tour).total_seconds()
-            for b in top_bundles
-        ]) / len(top_bundles)
-
-    line = f"{datetime.now().isoformat()},{avg_load_rest:.4f},{avg_load_top:.4f},{avg_delay_rest:.2f}," \
-            f"{avg_delay_top:.2f}\n"
-
-    if headers:
-        sys.stdout.write("timestamp,avg_load_rest,avg_load_top,avg_delay_rest,avg_delay_top\n")
-
-    sys.stdout.write(line)
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='Generates metrics from a bundles stream')
-    parser.add_argument('--headers', '-H', action='store_true', dest='headers', help='Prints headers')
-    return parser.parse_args()
+    print(f"Average bundle delay: {avg_delay:.2f} seconds ({avg_delay / 60:.1f}min)")
+    print(f"Std dev bundle delay: {std_delay:.2f} seconds ({std_delay / 60:.1f}min)")
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    metrics("data/bundles.csv", args.headers)
+    metrics("data/bundles.csv")

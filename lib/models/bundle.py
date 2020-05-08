@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from lib import utils
 from lib.models.notification import Notification
 
 
@@ -27,6 +28,18 @@ class Bundle:
 
         else:
             return f"{self.first_friend_name} went on a tour"
+
+    @classmethod
+    def from_line(cls, line: str, csv_delimiter: str = ','):
+        split = utils.split_csv_line(line, csv_delimiter)
+        return Bundle(
+            timestamp_last_tour=datetime.strptime(split[0], cls._TIMESTAMP_FORMAT),
+            timestamp_first_tour=datetime.strptime(split[1], cls._TIMESTAMP_FORMAT),
+            tours=split[2],
+            receiver_id=split[3],
+            first_friend_id="N/A",
+            first_friend_name="N/A"
+        )
 
     @classmethod
     def from_notification(cls, notification: Notification):
