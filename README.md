@@ -24,58 +24,60 @@ Below is an overview of the codebase:
 	* `/lib/errors.py` which contains bundlify specific errors,
 	* `/lib/hypervisor.py` which contains the bulk of the logic for coming with bundles from notifications defined as an abstract class with different implementations
 
+* `/notebooks` contains all jupyter notebooks which help with visualisation and interpretation:
+	* `/notebooks/notifications.ipynb` contains draft of early visualisation of our `notifications.csv` data sample,
+	* `/notebooks/bundles.ipynb` contains visualisation and interpretation based on our `bundles.csv` results.
+
 * `/tests` contains all unit tests written in pytest
 
 * `/doc` contains all docs, currently [ADRs](https://github.com/npryce/adr-tools)
 
 * `Makefile` defines targets to ease with development along with utils targets,
 * `Dockerfile` defines our application docker image, based on `python:3.8-alpine` image; currently set with `CMD` to `python src/bundlifier.py data/notifications.csv > data/bundles.csv`
+* `docker-entrypoint.sh` provides a convenient entrypoint to our application running the main python entrypoint and redirecting output to `data/bundles.csv`.
 * `docker-compose.yml` provides a convenient entrypoint to our application based on our Dockerfile.
-
-### Ranker
-
-###### TODO: expand on the ranker
 
 ## Illustrated flow
 
 Below is an illustrated flow of our main `bundlify.py` entrypoint.
 
 * The bundlifier is updating the hypervisor with notifications as it is parsing the file,
-* When a day's worth of observation has elapsed the Hypervisor computes and send bundles from notifications,
+* When a day's worth of observation has elapsed the Hypervisor computes and send bundles from notifications to stdout,
 
 ## Usage
 
-### python
+Binaries for `git`, `make` and `python3` are needed. To use follow below steps:
+* Git clone this repo anywhere then `cd <cloned_repo>`
+* Install dependencies in a virtual environment e.g.:
 
-Binaries for `python3` are needed. To use follow below steps:
-* Git clone this repo anywhere; `cd <cloned>`
-* This project doesn't use dependencies so you're good to go without a virtual environment,
-* To get all bundles on standard output run, with optional redirection:
+```
+python3 -m venv beautiful && source $(pwd)/beautiful/bin/activate && pip install -r dev-requirements.txt
+```
+
+### Run the tests
+
+To run linting, type checking and unit tests with coverage:
+
+```
+make check
+```
+
+### Run the `bundlifier`
+
+##### With python
+
+To get all bundles on standard output run, with optional redirection:
 
 ```
 python src/bundlifier.py <path-to-notifications-csv> [ > <path-to-bundles.csv> ]
 ```
 
-* To get all users on standard output run, with optional redirection:
+##### With docker-compose
+
+Needs the extra dependency for `docker-compose`. To create the volume: `./data:/bundlifier/data/` and run the main entrypoint using `data/notifications.csv`:
 
 ```
-python src/get_users.py.py <path-to-notifications-csv> [ > <path-to-users-csv> ]
+make run
 ```
 
-* To get performance stats on bundles run, with optional redirection:
-
-```
-python src/get_stats.py <path-to-bundles-csv> [ > <path-to-stats-csv> ]
-```
-
-### docker-compose
-
-Binaries for `git`, `docker` and `docker-compose` are needed. To use follow the below steps:
-
-* Git clone this repository anywhere; then `cd <cloned_repo>`
-* Run: `docker-compose up`,
-	* This will generate bundles and stats from notifications by running the command:
-
-```
-python src/bundlifier.py data/notifications.csv > data/bundles.csv
-```
+Find your results at: `/data/bundles.csv`
