@@ -12,6 +12,11 @@ check-tests:
 jupyter:
 	PYTHONPATH=$(shell pwd) jupyter-notebook
 
+run:
+	docker-compose down --remove-orphans && \
+		docker-compose build && \
+		docker-compose up
+
 clean:
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
