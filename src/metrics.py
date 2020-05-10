@@ -1,4 +1,5 @@
 import statistics as stats
+from typing import Dict, List
 
 from lib import utils
 from lib.models.bundle import Bundle
@@ -11,8 +12,8 @@ def metrics(bundles_filepath: str):
     bundles = list()
 
     daily_avgs = list()
-    daily_loads = dict()
-    daily_delays = list()
+    daily_loads: Dict[str, int] = dict()
+    daily_delays: List[int] = list()
 
     with open(bundles_filepath, "r") as fp:
         previous_ts = None

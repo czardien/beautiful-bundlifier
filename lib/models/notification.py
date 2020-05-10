@@ -16,7 +16,7 @@ class Notification:
         return [element.strip().replace("\n", "") for element in line.split(csv_delimiter)]
 
     @classmethod
-    def from_line(cls, line: str, csv_headers: List[str], csv_delimiter: str):
+    def from_line(cls, line: str, csv_headers: List[str], csv_delimiter: str = ','):
         csv_line = cls._split_line(line, csv_delimiter)
         return Notification(**dict(zip(csv_headers, csv_line)))
 
