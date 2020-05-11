@@ -1,5 +1,4 @@
 .coverage
 .mypy_cache/*
 *__pycache__*
-data/bundles.csv
 *.ipynb_checkpoints*
