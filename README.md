@@ -69,7 +69,7 @@ make check
 To get all bundles on standard output run, with optional redirection:
 
 ```
-python src/bundlifier.py <path-to-notifications-csv> [ > <path-to-bundles.csv> ]
+PYTHONPATH=$(pwd) python src/bundlifier.py <path-to-notifications-csv> [ > <path-to-bundles.csv> ]
 ```
 
 ##### With docker-compose
@@ -81,3 +81,9 @@ make run
 ```
 
 Find your results at: `/data/bundles.csv`
+
+## Performances
+
+For any compute-intense algorithms performances can be improved.
+
+Multi-processing seems more fit to our use-case as a way to leverage a multi-core CPU; multi threaded or async programming are usually more fitted to improve IO bounds applications.

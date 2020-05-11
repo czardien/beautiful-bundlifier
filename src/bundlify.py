@@ -1,3 +1,4 @@
+import sys
 from typing import List
 
 from lib import utils
@@ -21,6 +22,7 @@ def bundlify(notifications_filepath: str, hypervisor: Hypervisor, csv_headers: L
             current_timestamp = notification.timestamp
 
             if utils.is_a_new_day(current_timestamp, previous_timestamp):
+                sys.stderr.write(f"Processing day: {current_timestamp}...\n")
                 hypervisor.send_bundles()
 
             hypervisor.update_notifications(notification)

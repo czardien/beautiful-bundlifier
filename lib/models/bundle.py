@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from lib import utils
 from lib.models.notification import Notification
@@ -29,6 +30,10 @@ class Bundle:
         else:
             return f"{self.first_friend_name} went on a tour"
 
+    @property
+    def delay(self):
+        return self.timestamp_last_tour - self.timestamp_first_tour
+
     @classmethod
     def from_line(cls, line: str, csv_delimiter: str = ','):
         split = utils.split_csv_line(line, csv_delimiter)
@@ -45,6 +50,14 @@ class Bundle:
     def from_notification(cls, notification: Notification):
         return Bundle(1, notification.timestamp, notification.timestamp, notification.user_id, notification.friend_id,
                 notification.friend_name)
+
+    @classmethod
+    def from_notifications(cls, notifications: List[Notification]):
+        bundle = Bundle.from_notification(notifications[0])
+        for notification in notifications[1:]:
+            bundle.update(notification)
+
+        return bundle
 
     def update(self, notification: Notification):
         self.friend_ids.add(notification.friend_id)

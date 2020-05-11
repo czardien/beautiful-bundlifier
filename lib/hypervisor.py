@@ -1,5 +1,5 @@
 import sys
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Tuple
 from datetime import datetime
 
 from lib.errors import BundlifyError
@@ -46,8 +46,8 @@ class HypervisorNaive(Hypervisor):
         return bundles
 
 
-class HypervisorV1(Hypervisor):
-    """V1 bundles all notifications when a daily number for a given user exceeds 4"""
+class HypervisorAllInOne(Hypervisor):
+    """AllInOne bundles all notifications when a daily number for a given user exceeds 4"""
 
     def _compute_bundles_from_notifications(self) -> List[Bundle]:
         bundles = list()
@@ -65,8 +65,49 @@ class HypervisorV1(Hypervisor):
         return bundles
 
 
+class HypervisorGreedy(Hypervisor):
+    """Greedy bundles notifications with minimum delay when a daily number for a given user exceeds 4"""
+
+    def _compute_bundles_from_notifications(self) -> List[Bundle]:
+        bundles: List[Bundle] = list()
+        for user_id, notifications in self.user_notifications.items():
+            if len(notifications) > 4:
+                # dynamically evaluate equally split buckets while keeping delay small
+                # bundles_with_delay: List[Tuple[List[Bundle], float]] = list()
+                bundles_with_min_delay: Union[Bundle, None] = None
+                min_delay: float = None
+
+                for idx1 in range(1, len(notifications) - 2):
+                    for idx2 in range(idx1 + 1, len(notifications) - 1):
+                        for idx3 in range(idx2 + 1, len(notifications)):
+                            tmp_bundles = [
+                                Bundle.from_notifications(notifications[:idx1]),
+                                Bundle.from_notifications(notifications[idx1:idx2]),
+                                Bundle.from_notifications(notifications[idx2:idx3]),
+                                Bundle.from_notifications(notifications[idx3:])
+                            ]
+                            tmp_delay = sum([bundle.delay.total_seconds() for bundle in tmp_bundles])
+                            if not min_delay or tmp_delay < min_delay:
+                                bundles_with_min_delay = tmp_bundles
+                                min_delay = tmp_delay
+
+                            # bundles_with_delay.append((tmp_bundles, tmp_delay))
+
+                # bundles_with_min_delay = min(bundles_with_delay, key=lambda bundle_with_delay: bundle_with_delay[1])[0]
+                bundles.extend(bundles_with_min_delay)
+
+            else:
+                bundles.extend([Bundle.from_notification(notification) for notification in notifications])
+
+        return bundles
+
+
 class HypervisorFactory:
-    _ENABLED = {"naive": HypervisorNaive, "v1": HypervisorV1}
+    _ENABLED = {
+        "naive": HypervisorNaive,
+        "all-in-one": HypervisorAllInOne,
+        "greedy": HypervisorGreedy
+    }
 
     @classmethod
     def build(cls, hid: str) -> Hypervisor:
