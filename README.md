@@ -24,9 +24,7 @@ Below is an overview of the codebase:
 	* `/lib/errors.py` which contains bundlify specific errors,
 	* `/lib/hypervisor.py` which contains the bulk of the logic for coming with bundles from notifications defined as an abstract class with different implementations
 
-* `/notebooks` contains all jupyter notebooks which help with visualisation and interpretation:
-	* `/notebooks/notifications.ipynb` contains draft of early visualisation of our `notifications.csv` data sample,
-	* `/notebooks/bundles.ipynb` contains visualisation and interpretation based on our `bundles.csv` results.
+* `/notebooks` contains jupyter notebooks which help with visualisation and interpretation. Those include valuable insights into this exercise: [here](https://github.com/czardien/beautiful-notifications-bundler/blob/master/notebooks/notifications.ipynb).
 
 * `/tests` contains all unit tests written in pytest
 

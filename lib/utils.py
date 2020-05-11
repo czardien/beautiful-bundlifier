@@ -6,7 +6,7 @@ from datetime import datetime
 def parse_args(enabled_hypervisors: List[str]):
     parser = argparse.ArgumentParser(description='Generates bundles from a timestamped notifications stream')
     parser.add_argument('notifications_filepath', type=str, help='Absolute path for the event stream to process.')
-    parser.add_argument('--hypervisor', dest="hypervisor", type=str, default="greedy",
+    parser.add_argument('--hypervisor', dest="hypervisor", type=str, default="all-in-one",
             choices=enabled_hypervisors, help='Hypervisor name to use')
     return parser.parse_args()
 

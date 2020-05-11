@@ -1,5 +1,5 @@
 import sys
-from typing import Dict, List, Union, Tuple
+from typing import Dict, List, Union
 from datetime import datetime
 
 from lib.errors import BundlifyError
@@ -73,9 +73,8 @@ class HypervisorGreedy(Hypervisor):
         for user_id, notifications in self.user_notifications.items():
             if len(notifications) > 4:
                 # dynamically evaluate equally split buckets while keeping delay small
-                # bundles_with_delay: List[Tuple[List[Bundle], float]] = list()
-                bundles_with_min_delay: Union[Bundle, None] = None
-                min_delay: float = None
+                bundles_with_min_delay: List[Bundle] = list()
+                min_delay: Union[float, None] = None
 
                 for idx1 in range(1, len(notifications) - 2):
                     for idx2 in range(idx1 + 1, len(notifications) - 1):
@@ -91,9 +90,6 @@ class HypervisorGreedy(Hypervisor):
                                 bundles_with_min_delay = tmp_bundles
                                 min_delay = tmp_delay
 
-                            # bundles_with_delay.append((tmp_bundles, tmp_delay))
-
-                # bundles_with_min_delay = min(bundles_with_delay, key=lambda bundle_with_delay: bundle_with_delay[1])[0]
                 bundles.extend(bundles_with_min_delay)
 
             else:
